@@ -12,9 +12,10 @@ BUSYBOX_VERSION=1_33_1
 FINDER_APP_DIR=$(realpath $(dirname $0))
 ARCH=arm64
 CROSS_COMPILE=aarch64-none-linux-gnu-
-TOOLCHAIN_PATH=/home/coursera/Documents/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu
-TOOLCHAIN_BIN=/home/coursera/Documents/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/bin
-export PATH="$TOOLCHAIN_BIN:$PATH"
+export PATH="/home/coursera/Documents/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/bin:$PATH"
+export SYSROOT=$(${CROSS_COMPILE}gcc -print-sysroot) 
+
+
 
 if [ $# -lt 1 ]
 then
@@ -87,10 +88,10 @@ ${CROSS_COMPILE}readelf -a bin/busybox | grep "program interpreter"
 ${CROSS_COMPILE}readelf -a bin/busybox | grep "Shared library"
 
 # TODO: Add library dependencies to rootfs
-cp  $TOOLCHAIN_PATH/aarch64-none-linux-gnu/libc/lib/ld-linux-aarch64.so.1 $OUTDIR/rootfs/lib
-cp  $TOOLCHAIN_PATH/aarch64-none-linux-gnu/libc/lib64/libm.so.6 $OUTDIR/rootfs/lib64
-cp  $TOOLCHAIN_PATH/aarch64-none-linux-gnu/libc/lib64/libresolv.so.2 $OUTDIR/rootfs/lib64
-cp  $TOOLCHAIN_PATH/aarch64-none-linux-gnu/libc/lib64/libc.so.6 $OUTDIR/rootfs/lib64
+cp  $SYSROOT/lib/ld-linux-aarch64.so.1 $OUTDIR/rootfs/lib
+cp  $SYSROOT/lib64/libm.so.6 $OUTDIR/rootfs/lib64
+cp  $SYSROOT/lib64/libresolv.so.2 $OUTDIR/rootfs/lib64
+cp  $SYSROOT/lib64/libc.so.6 $OUTDIR/rootfs/lib64
 
 # TODO: Make device nodes
 cd $OUTDIR/rootfs
